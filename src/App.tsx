@@ -3,7 +3,6 @@ import {
   areColorsEqual,
   getImageDataFromFile,
   getPositionColor,
-  loadImageFile,
 } from './utils';
 
 async function renderImageFile(file: File) {
@@ -40,9 +39,18 @@ async function renderImageFile(file: File) {
     const minY = infos[0][0];
     const maxY = infos[infos.length - 1][0];
     const canvas = document.createElement('canvas');
-    canvas.width = maxX - minX + 1;
-    canvas.height = maxY - minY + 1;
+    const imageWidth = maxX - minX + 1;
+    const imageHeight = maxY - minY + 1;
+
+    const imageRatio = imageWidth / imageHeight;
+    const canvasWidth = window.innerWidth / 2;
+    const canvasHeight = canvasWidth / imageRatio;
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+
     const ctx = canvas.getContext('2d')!;
+
     ctx.drawImage(
       image,
       minX,
@@ -51,9 +59,10 @@ async function renderImageFile(file: File) {
       maxY - minY + 1,
       0,
       0,
-      maxX - minX + 1,
-      maxY - minY + 1
+      canvasWidth,
+      canvasHeight
     );
+
     document.body.appendChild(canvas);
   }
 }
