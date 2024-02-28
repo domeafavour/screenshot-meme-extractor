@@ -38,7 +38,7 @@ export function loadImageFile(imageFile: File) {
   });
 }
 
-export async function getImageDataFromFile(
+export async function clearAndDrawImageFile(
   file: File,
   canvas: HTMLCanvasElement
 ): Promise<{

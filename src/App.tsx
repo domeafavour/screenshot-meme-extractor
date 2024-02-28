@@ -3,12 +3,12 @@ import './App.css';
 import { ImageRowInfo } from './typings';
 import {
   getClippedInfo,
-  getImageDataFromFile,
+  clearAndDrawImageFile,
   getImageRowInfos,
 } from './utils';
 
 async function renderImageFile(file: File, canvas: HTMLCanvasElement) {
-  const { imageData } = await getImageDataFromFile(file, canvas);
+  const { imageData } = await clearAndDrawImageFile(file, canvas);
   const infos: ImageRowInfo[] = getImageRowInfos(imageData);
 
   if (infos.length) {
