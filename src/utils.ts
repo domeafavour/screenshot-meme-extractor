@@ -87,8 +87,8 @@ export function getImageRowInfos(imageData: ImageData) {
 export function getMinAndMax(
   pairs: [number, number][]
 ): [min: number, max: number] {
-  let min: number = 0;
-  let max: number = 0;
+  let min: number = Infinity;
+  let max: number = -Infinity;
   for (let i = 0; i < pairs.length; i++) {
     const [_min, _max] = pairs[i];
     if (_min < min) {
