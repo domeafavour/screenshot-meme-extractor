@@ -13,15 +13,35 @@ async function renderImageFile(file: File, canvas: HTMLCanvasElement) {
 
   if (infos.length) {
     const { minX, maxX, minY, maxY } = getClippedInfo(infos);
-    const x = minX;
-    const y = minY;
-    const width = maxX - minX;
-    const height = maxY - minY;
+    const clippedX = minX;
+    const clippedY = minY;
+    const clippedWidth = maxX - minX;
+    const clippedHeight = maxY - minY;
 
     const ctx = canvas.getContext('2d')!;
     ctx.strokeStyle = 'red';
     ctx.lineWidth = 1;
-    ctx.strokeRect(x, y, width, height);
+    ctx.strokeRect(clippedX, clippedY, clippedWidth, clippedHeight);
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    // left
+    ctx.fillRect(0, 0, clippedX, canvas.height);
+    // top center
+    ctx.fillRect(
+      clippedX + clippedWidth,
+      0,
+      canvas.width - clippedX - clippedWidth,
+      canvas.height
+    );
+    // right
+    ctx.fillRect(clippedX, 0, clippedWidth, clippedY);
+    // bottom center
+    ctx.fillRect(
+      clippedX,
+      clippedY + clippedHeight,
+      clippedWidth,
+      canvas.height - clippedY - clippedHeight
+    );
   }
 }
 
