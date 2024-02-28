@@ -38,20 +38,21 @@ export function loadImageFile(imageFile: File) {
   });
 }
 
-export async function getImageDataFromFile(file: File): Promise<{
+export async function getImageDataFromFile(
+  file: File,
+  canvas: HTMLCanvasElement
+): Promise<{
   imageData: ImageData;
-  canvas: HTMLCanvasElement;
   image: HTMLImageElement;
 }> {
-  const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d')!;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   const img = await loadImageFile(file);
   canvas.width = img.width;
   canvas.height = img.height;
   ctx.drawImage(img, 0, 0);
   return {
     imageData: ctx.getImageData(0, 0, img.width, img.height),
-    canvas,
     image: img,
   };
 }

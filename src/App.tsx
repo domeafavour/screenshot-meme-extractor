@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import './App.css';
 import { ImageRowInfo } from './typings';
 import {
@@ -7,10 +7,9 @@ import {
   getImageRowInfos,
 } from './utils';
 
-async function renderImageFile(file: File) {
-  const { imageData, image, canvas } = await getImageDataFromFile(file);
+async function renderImageFile(file: File, canvas: HTMLCanvasElement) {
+  const { imageData } = await getImageDataFromFile(file, canvas);
   const infos: ImageRowInfo[] = getImageRowInfos(imageData);
-  document.body.appendChild(canvas);
 
   if (infos.length) {
     const { minX, maxX, minY, maxY } = getClippedInfo(infos);
@@ -28,18 +27,22 @@ async function renderImageFile(file: File) {
 }
 
 function App() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   return (
-    <input
-      type="file"
-      onChange={(e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-          renderImageFile(file);
-        }
-        e.target.value = '';
-      }}
-      accept="image/*"
-    />
+    <div>
+      <canvas ref={canvasRef} />
+      <input
+        type="file"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) {
+            renderImageFile(file, canvasRef.current!);
+          }
+          e.target.value = '';
+        }}
+        accept="image/*"
+      />
+    </div>
   );
 }
 
