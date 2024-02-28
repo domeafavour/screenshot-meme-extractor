@@ -1,4 +1,4 @@
-import { RGBAColor } from './typings';
+import { ClippedInfo, ImageRowInfo, RGBAColor } from './typings';
 
 export function areColorsEqual(a: RGBAColor, b: RGBAColor) {
   return (
@@ -38,9 +38,7 @@ export function loadImageFile(imageFile: File) {
   });
 }
 
-export async function getImageDataFromFile(
-  file: File
-): Promise<{
+export async function getImageDataFromFile(file: File): Promise<{
   imageData: ImageData;
   canvas: HTMLCanvasElement;
   image: HTMLImageElement;
@@ -56,4 +54,56 @@ export async function getImageDataFromFile(
     canvas,
     image: img,
   };
+}
+
+export function getImageRowInfos(imageData: ImageData) {
+  const infos: ImageRowInfo[] = [];
+
+  for (let y = 0; y < imageData.height; y++) {
+    let leftX = 0;
+    let rightX = imageData.width - 1 - leftX;
+    for (let x = leftX; x < Math.ceil(imageData.width / 2); x++) {
+      leftX = x;
+      rightX = imageData.width - 1 - x;
+      if (rightX <= leftX) {
+        rightX = leftX + 1;
+      }
+      if (
+        !areColorsEqual(
+          getPositionColor(imageData, leftX, y),
+          getPositionColor(imageData, rightX, y)
+        )
+      ) {
+        break;
+      }
+    }
+    if (rightX - leftX > 1) {
+      infos.push([y, [leftX, rightX]]);
+    }
+  }
+  return infos;
+}
+
+export function getMinAndMax(
+  pairs: [number, number][]
+): [min: number, max: number] {
+  let min: number = 0;
+  let max: number = 0;
+  for (let i = 0; i < pairs.length; i++) {
+    const [_min, _max] = pairs[i];
+    if (_min < min) {
+      min = _min;
+    }
+    if (_max > max) {
+      max = _max;
+    }
+  }
+  return [min, max];
+}
+
+export function getClippedInfo(infos: ImageRowInfo[]): ClippedInfo {
+  const [minX, maxX] = getMinAndMax(infos.map((info) => info[1]));
+  const minY = infos[0][0];
+  const maxY = infos[infos.length - 1][0];
+  return { minX, maxX, minY, maxY };
 }

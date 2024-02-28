@@ -1,43 +1,17 @@
 import React from 'react';
+import { ImageRowInfo } from './typings';
 import {
-  areColorsEqual,
+  getClippedInfo,
   getImageDataFromFile,
-  getPositionColor,
+  getImageRowInfos,
 } from './utils';
 
 async function renderImageFile(file: File) {
   const { imageData, image } = await getImageDataFromFile(file);
-  const infos: [number, [number, number]][] = [];
-
-  for (let y = 0; y < imageData.height; y++) {
-    let leftX = 0;
-    let rightX = imageData.width - 1 - leftX;
-    for (let x = leftX; x < Math.ceil(imageData.width / 2); x++) {
-      leftX = x;
-      rightX = imageData.width - 1 - x;
-      if (rightX <= leftX) {
-        rightX = leftX + 1;
-      }
-      if (
-        !areColorsEqual(
-          getPositionColor(imageData, leftX, y),
-          getPositionColor(imageData, rightX, y)
-        )
-      ) {
-        // image
-        break;
-      }
-    }
-    if (rightX - leftX > 1) {
-      infos.push([y, [leftX, rightX]]);
-    }
-  }
+  const infos: ImageRowInfo[] = getImageRowInfos(imageData);
 
   if (infos.length) {
-    const minX = Math.min(...infos.map(([, [leftX]]) => leftX));
-    const maxX = Math.max(...infos.map(([, [, rightX]]) => rightX));
-    const minY = infos[0][0];
-    const maxY = infos[infos.length - 1][0];
+    const { minX, maxX, minY, maxY } = getClippedInfo(infos);
     const canvas = document.createElement('canvas');
     const imageWidth = maxX - minX + 1;
     const imageHeight = maxY - minY + 1;
