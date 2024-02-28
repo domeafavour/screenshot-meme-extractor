@@ -1,62 +1,61 @@
 import React from 'react';
-import { RGBAColor } from './typings';
-import { areColorsEqual, getPositionColor, loadImageFile } from './utils';
+import {
+  areColorsEqual,
+  getImageDataFromFile,
+  getPositionColor,
+  loadImageFile,
+} from './utils';
 
 async function renderImageFile(file: File) {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d')!;
-  const img = await loadImageFile(file);
-  canvas.width = img.width;
-  canvas.height = img.height;
-  ctx.drawImage(img, 0, 0);
-
-  const sameColorRows: number[] = [];
-
-  // [x, y][]
-  const rectPositions: number[][] = [];
-
-  let backgroundColor: RGBAColor | null = null;
-
-  let startX = 0;
-  let startY = 0;
-
-  const imageData = ctx.getImageData(0, 0, img.width, img.height);
-  const rows: RGBAColor[][] = [];
-  for (let y = 0; y < imageData.height; y++) {
-    const row: RGBAColor[] = [];
-    for (let x = 0; x < imageData.width; x++) {
-      row.push(getPositionColor(imageData, x, y));
-    }
-    rows.push(row);
-  }
-  console.log('rows', rows);
+  const { imageData, image } = await getImageDataFromFile(file);
+  const infos: [number, [number, number]][] = [];
 
   for (let y = 0; y < imageData.height; y++) {
-    let sameColorCount = 0;
-    let previousColor: RGBAColor | null = null;
-
-    for (let x = 0; x < imageData.width; x++) {
-      if (x === 0) {
-        previousColor = getPositionColor(imageData, x, y);
-        sameColorCount = 1;
-      } else {
-        const currentColor = getPositionColor(imageData, x, y);
-        if (areColorsEqual(previousColor!, currentColor)) {
-          previousColor = currentColor;
-          sameColorCount++;
-        }
+    let leftX = 0;
+    let rightX = imageData.width - 1 - leftX;
+    for (let x = leftX; x < Math.ceil(imageData.width / 2); x++) {
+      leftX = x;
+      rightX = imageData.width - 1 - x;
+      if (rightX <= leftX) {
+        rightX = leftX + 1;
+      }
+      if (
+        !areColorsEqual(
+          getPositionColor(imageData, leftX, y),
+          getPositionColor(imageData, rightX, y)
+        )
+      ) {
+        // image
+        break;
       }
     }
-
-    if (sameColorCount === imageData.width) {
-      if (!backgroundColor) {
-        backgroundColor = getPositionColor(imageData, 0, y);
-      }
-      sameColorRows.push(y);
+    if (rightX - leftX > 1) {
+      infos.push([y, [leftX, rightX]]);
     }
   }
-  console.log('backgroundColor: ', backgroundColor);
-  // console.log('rectPositions', rectPositions);
+
+  if (infos.length) {
+    const minX = Math.min(...infos.map(([, [leftX]]) => leftX));
+    const maxX = Math.max(...infos.map(([, [, rightX]]) => rightX));
+    const minY = infos[0][0];
+    const maxY = infos[infos.length - 1][0];
+    const canvas = document.createElement('canvas');
+    canvas.width = maxX - minX + 1;
+    canvas.height = maxY - minY + 1;
+    const ctx = canvas.getContext('2d')!;
+    ctx.drawImage(
+      image,
+      minX,
+      minY,
+      maxX - minX + 1,
+      maxY - minY + 1,
+      0,
+      0,
+      maxX - minX + 1,
+      maxY - minY + 1
+    );
+    document.body.appendChild(canvas);
+  }
 }
 
 function App() {
