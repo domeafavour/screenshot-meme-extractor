@@ -7,37 +7,22 @@ import {
 } from './utils';
 
 async function renderImageFile(file: File) {
-  const { imageData, image } = await getImageDataFromFile(file);
+  const { imageData, image, canvas } = await getImageDataFromFile(file);
   const infos: ImageRowInfo[] = getImageRowInfos(imageData);
+  document.body.appendChild(canvas);
 
   if (infos.length) {
     const { minX, maxX, minY, maxY } = getClippedInfo(infos);
-    const canvas = document.createElement('canvas');
-    const imageWidth = maxX - minX + 1;
-    const imageHeight = maxY - minY + 1;
-
-    const imageRatio = imageWidth / imageHeight;
-    const canvasWidth = window.innerWidth / 2;
-    const canvasHeight = canvasWidth / imageRatio;
-
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
 
     const ctx = canvas.getContext('2d')!;
-
-    ctx.drawImage(
-      image,
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(
       minX,
       minY,
-      maxX - minX + 1,
-      maxY - minY + 1,
-      0,
-      0,
-      canvasWidth,
-      canvasHeight
+      ((maxX - minX) / imageData.width) * canvas.width,
+      ((maxY - minY) / imageData.height) * canvas.height
     );
-
-    document.body.appendChild(canvas);
   }
 }
 
