@@ -13,16 +13,15 @@ async function renderImageFile(file: File, canvas: HTMLCanvasElement) {
 
   if (infos.length) {
     const { minX, maxX, minY, maxY } = getClippedInfo(infos);
+    const x = minX;
+    const y = minY;
+    const width = maxX - minX;
+    const height = maxY - minY;
 
     const ctx = canvas.getContext('2d')!;
     ctx.strokeStyle = 'red';
     ctx.lineWidth = 1;
-    ctx.strokeRect(
-      minX,
-      minY,
-      ((maxX - minX) / imageData.width) * canvas.width,
-      ((maxY - minY) / imageData.height) * canvas.height
-    );
+    ctx.strokeRect(x, y, width, height);
   }
 }
 
