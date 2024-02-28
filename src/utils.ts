@@ -37,3 +37,13 @@ export function loadImageFile(imageFile: File) {
     reader.readAsDataURL(imageFile);
   });
 }
+
+export async function getImageDataFromFile(file: File): Promise<ImageData> {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d')!;
+  const img = await loadImageFile(file);
+  canvas.width = img.width;
+  canvas.height = img.height;
+  ctx.drawImage(img, 0, 0);
+  return ctx.getImageData(0, 0, img.width, img.height);
+}
