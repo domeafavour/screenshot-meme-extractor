@@ -1,24 +1,19 @@
 import React, { useRef } from 'react';
 import './App.css';
 import { UploadButton } from './UploadButton';
-import { ImageRowInfo } from './typings';
-import {
-  clearAndDrawImageFile,
-  drawBackdrops,
-  getClippedInfo,
-  getImageRowInfos,
-} from './utils';
+import { clearAndDrawImageFile, drawBackdrops, getClippedRect } from './utils';
 
 async function renderImageFile(file: File, canvas: HTMLCanvasElement) {
   const { imageData } = await clearAndDrawImageFile(file, canvas);
-  const infos: ImageRowInfo[] = getImageRowInfos(imageData);
+  const clippedRect = getClippedRect(imageData);
 
-  if (infos.length) {
-    const { minX, maxX, minY, maxY } = getClippedInfo(infos);
-    const clippedX = minX;
-    const clippedY = minY;
-    const clippedWidth = maxX - minX;
-    const clippedHeight = maxY - minY;
+  if (clippedRect) {
+    const {
+      x: clippedX,
+      y: clippedY,
+      width: clippedWidth,
+      height: clippedHeight,
+    } = clippedRect;
 
     const ctx = canvas.getContext('2d')!;
     ctx.strokeStyle = 'red';

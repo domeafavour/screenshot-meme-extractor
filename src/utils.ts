@@ -138,3 +138,22 @@ export function drawBackdrops(
   // bottom center
   ctx.fillRect(x, y + height, width, canvasHeight - y - height);
 }
+
+export function getClippedRect(imageData: ImageData): {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+} | null {
+  const infos: ImageRowInfo[] = getImageRowInfos(imageData);
+  if (infos.length) {
+    const { minX, maxX, minY, maxY } = getClippedInfo(infos);
+    return {
+      x: minX,
+      y: minY,
+      width: maxX - minX,
+      height: maxY - minY,
+    };
+  }
+  return null;
+}
