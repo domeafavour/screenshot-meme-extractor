@@ -4,6 +4,7 @@ import { UploadButton } from './UploadButton';
 import { ImageRowInfo } from './typings';
 import {
   clearAndDrawImageFile,
+  drawBackdrops,
   getClippedInfo,
   getImageRowInfos,
 } from './utils';
@@ -24,25 +25,12 @@ async function renderImageFile(file: File, canvas: HTMLCanvasElement) {
     ctx.lineWidth = 1;
     ctx.strokeRect(clippedX, clippedY, clippedWidth, clippedHeight);
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    // left
-    ctx.fillRect(0, 0, clippedX, canvas.height);
-    // top center
-    ctx.fillRect(
-      clippedX + clippedWidth,
-      0,
-      canvas.width - clippedX - clippedWidth,
-      canvas.height
-    );
-    // right
-    ctx.fillRect(clippedX, 0, clippedWidth, clippedY);
-    // bottom center
-    ctx.fillRect(
-      clippedX,
-      clippedY + clippedHeight,
-      clippedWidth,
-      canvas.height - clippedY - clippedHeight
-    );
+    drawBackdrops(ctx, {
+      x: clippedX,
+      y: clippedY,
+      width: clippedWidth,
+      height: clippedHeight,
+    });
   }
 }
 

@@ -108,3 +108,33 @@ export function getClippedInfo(infos: ImageRowInfo[]): ClippedInfo {
   const maxY = infos[infos.length - 1][0];
   return { minX, maxX, minY, maxY };
 }
+
+export function drawBackdrops(
+  ctx: CanvasRenderingContext2D,
+  options: Partial<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    color: string;
+  }>
+) {
+  const canvasWidth = ctx.canvas.width;
+  const canvasHeight = ctx.canvas.height;
+  const {
+    x = 0,
+    y = 0,
+    width = canvasWidth,
+    height = canvasHeight,
+    color = 'rgba(0, 0, 0, 0.5)',
+  } = options;
+  ctx.fillStyle = color;
+  // left
+  ctx.fillRect(0, 0, x, canvasHeight);
+  // top center
+  ctx.fillRect(x + width, 0, canvasWidth - x - width, canvasHeight);
+  // right
+  ctx.fillRect(x, 0, width, y);
+  // bottom center
+  ctx.fillRect(x, y + height, width, canvasHeight - y - height);
+}
