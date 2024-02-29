@@ -9,6 +9,15 @@ export function areColorsEqual(a: RGBAColor, b: RGBAColor) {
   );
 }
 
+export function areColorsRoughlyEqual(a: RGBAColor, b: RGBAColor, diff = 10) {
+  return (
+    Math.abs(a.red - b.red) < diff &&
+    Math.abs(a.green - b.green) < diff &&
+    Math.abs(a.blue - b.blue) < diff &&
+    Math.abs(a.alpha - b.alpha) < diff
+  );
+}
+
 export function getPositionColor(
   imageData: ImageData,
   x: number,
@@ -76,6 +85,69 @@ export function getImageRowInfos(imageData: ImageData) {
     }
   }
   return infos;
+}
+
+function isRowColorsRoughlyEqual(
+  imageData: ImageData,
+  row: number
+): [boolean, number, number] {
+  for (let left = 0; left < imageData.width; left++) {
+    const right = imageData.width - 1 - left;
+    if (
+      !areColorsRoughlyEqual(
+        getPositionColor(imageData, left, row),
+        getPositionColor(imageData, right, row)
+      )
+    ) {
+      return [false, left, right];
+    }
+  }
+  return [true, 0, imageData.width - 1];
+}
+
+export function getCenterImageArea(imageData: ImageData): Area {
+  const { width, height } = imageData;
+
+  const halfHeight = Math.ceil(height / 2);
+
+  let top = 0;
+  let bottom = height - 1;
+
+  let left = Infinity;
+  let right = -Infinity;
+
+  for (let i = halfHeight; i >= 0; i--) {
+    const [isUpRowRoughlyEqual, leftX, rightX] = isRowColorsRoughlyEqual(
+      imageData,
+      i
+    );
+    if (isUpRowRoughlyEqual) {
+      top = i + 1;
+      break;
+    } else {
+      left = Math.min(left, leftX);
+      right = Math.max(right, rightX);
+    }
+  }
+
+  for (let i = top + 1; i < height; i++) {
+    const [isDownRowRoughlyEqual, leftX, rightX] = isRowColorsRoughlyEqual(
+      imageData,
+      i
+    );
+    if (isDownRowRoughlyEqual) {
+      bottom = i - 1;
+      break;
+    } else {
+      left = Math.min(left, leftX);
+      right = Math.max(right, rightX);
+    }
+  }
+
+  left = left === Infinity ? 0 : left;
+  right = right === -Infinity ? width - 1 : right;
+
+  return { x: left, y: top, width: right - left, height: bottom - top };
 }
 
 export function getMinAndMax(

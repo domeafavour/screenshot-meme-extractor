@@ -7,8 +7,8 @@ import {
   downloadImage,
   drawBackdrops,
   drawClippedArea,
+  getCenterImageArea,
   getClippedImage,
-  getClippedRect,
   loadImageFile,
 } from './utils';
 
@@ -23,7 +23,8 @@ function App() {
       const canvas = canvasRef.current!;
       const img = await loadImageFile(file);
       imageRef.current = img;
-      const clippedRect = getClippedRect(await clearAndDrawImage(img, canvas));
+      const imageData = await clearAndDrawImage(img, canvas);
+      const clippedRect = getCenterImageArea(imageData);
       setClippedArea(clippedRect);
 
       if (clippedRect) {
