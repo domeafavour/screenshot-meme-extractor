@@ -13,3 +13,10 @@ export type ClippedInfo = {
   minY: number;
   maxY: number;
 };
+
+export type Area = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};

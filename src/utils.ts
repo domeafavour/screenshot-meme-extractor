@@ -1,4 +1,4 @@
-import { ClippedInfo, ImageRowInfo, RGBAColor } from './typings';
+import { Area, ClippedInfo, ImageRowInfo, RGBAColor } from './typings';
 
 export function areColorsEqual(a: RGBAColor, b: RGBAColor) {
   return (
@@ -104,13 +104,11 @@ export function getClippedInfo(infos: ImageRowInfo[]): ClippedInfo {
 
 export function drawBackdrops(
   canvas: HTMLCanvasElement,
-  options: Partial<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    color: string;
-  }>
+  options: Partial<
+    Area & {
+      color: string;
+    }
+  >
 ) {
   const ctx = canvas.getContext('2d')!;
   const canvasWidth = canvas.width;
@@ -154,13 +152,11 @@ export function getClippedRect(imageData: ImageData): {
 
 export function drawClippedArea(
   canvas: HTMLCanvasElement,
-  options: Partial<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    color: string;
-  }>
+  options: Partial<
+    Area & {
+      color: string;
+    }
+  >
 ) {
   const {
     x = 0,
