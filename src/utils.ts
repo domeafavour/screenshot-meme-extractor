@@ -170,3 +170,29 @@ export function drawClippedArea(
   ctx.lineWidth = 1;
   ctx.strokeRect(x, y, width, height);
 }
+
+export function getClippedImage(img: HTMLImageElement, clippedArea: Area) {
+  const canvas = document.createElement('canvas');
+  canvas.width = clippedArea.width;
+  canvas.height = clippedArea.height;
+  const ctx = canvas.getContext('2d')!;
+  ctx.drawImage(
+    img,
+    clippedArea.x,
+    clippedArea.y,
+    clippedArea.width,
+    clippedArea.height,
+    0,
+    0,
+    clippedArea.width,
+    clippedArea.height
+  );
+  return canvas.toDataURL();
+}
+
+export function downloadImage(dataUrl: string, filename: string) {
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = filename;
+  a.click();
+}
