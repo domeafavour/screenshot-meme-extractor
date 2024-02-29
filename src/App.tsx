@@ -48,19 +48,23 @@ async function renderImageFile(file: File, canvas: HTMLCanvasElement) {
 function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   return (
-    <div>
-      <canvas ref={canvasRef} />
-      <input
-        type="file"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) {
-            renderImageFile(file, canvasRef.current!);
-          }
-          e.target.value = '';
-        }}
-        accept="image/*"
-      />
+    <div className="flex flex-col h-full">
+      <div className="flex flex-row justify-center items-center flex-1">
+        <canvas ref={canvasRef} />
+      </div>
+      <div className="flex flex-row gap-2">
+        <input
+          type="file"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              renderImageFile(file, canvasRef.current!);
+            }
+            e.target.value = '';
+          }}
+          accept="image/*"
+        />
+      </div>
     </div>
   );
 }
