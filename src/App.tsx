@@ -2,14 +2,16 @@ import React, { useRef } from 'react';
 import './App.css';
 import { UploadButton } from './UploadButton';
 import {
-  clearAndDrawImageFile,
+  clearAndDrawImage,
   drawBackdrops,
   drawClippedArea,
   getClippedRect,
+  loadImageFile,
 } from './utils';
 
 async function renderImageFile(file: File, canvas: HTMLCanvasElement) {
-  const { imageData } = await clearAndDrawImageFile(file, canvas);
+  const img = await loadImageFile(file);
+  const imageData = await clearAndDrawImage(img, canvas);
   const clippedRect = getClippedRect(imageData);
 
   if (clippedRect) {

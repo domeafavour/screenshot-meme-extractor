@@ -38,23 +38,16 @@ export function loadImageFile(imageFile: File) {
   });
 }
 
-export async function clearAndDrawImageFile(
-  file: File,
+export async function clearAndDrawImage(
+  img: HTMLImageElement,
   canvas: HTMLCanvasElement
-): Promise<{
-  imageData: ImageData;
-  image: HTMLImageElement;
-}> {
+): Promise<ImageData> {
   const ctx = canvas.getContext('2d')!;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const img = await loadImageFile(file);
   canvas.width = img.width;
   canvas.height = img.height;
   ctx.drawImage(img, 0, 0);
-  return {
-    imageData: ctx.getImageData(0, 0, img.width, img.height),
-    image: img,
-  };
+  return ctx.getImageData(0, 0, img.width, img.height);
 }
 
 export function getImageRowInfos(imageData: ImageData) {
