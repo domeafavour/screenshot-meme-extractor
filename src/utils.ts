@@ -110,7 +110,7 @@ export function getClippedInfo(infos: ImageRowInfo[]): ClippedInfo {
 }
 
 export function drawBackdrops(
-  ctx: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement,
   options: Partial<{
     x: number;
     y: number;
@@ -119,8 +119,9 @@ export function drawBackdrops(
     color: string;
   }>
 ) {
-  const canvasWidth = ctx.canvas.width;
-  const canvasHeight = ctx.canvas.height;
+  const ctx = canvas.getContext('2d')!;
+  const canvasWidth = canvas.width;
+  const canvasHeight = canvas.height;
   const {
     x = 0,
     y = 0,
@@ -156,4 +157,27 @@ export function getClippedRect(imageData: ImageData): {
     };
   }
   return null;
+}
+
+export function drawClippedArea(
+  canvas: HTMLCanvasElement,
+  options: Partial<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    color: string;
+  }>
+) {
+  const {
+    x = 0,
+    y = 0,
+    width = canvas.width,
+    height = canvas.height,
+    color = 'red',
+  } = options;
+  const ctx = canvas.getContext('2d')!;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x, y, width, height);
 }

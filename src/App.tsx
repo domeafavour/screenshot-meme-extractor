@@ -1,7 +1,12 @@
 import React, { useRef } from 'react';
 import './App.css';
 import { UploadButton } from './UploadButton';
-import { clearAndDrawImageFile, drawBackdrops, getClippedRect } from './utils';
+import {
+  clearAndDrawImageFile,
+  drawBackdrops,
+  drawClippedArea,
+  getClippedRect,
+} from './utils';
 
 async function renderImageFile(file: File, canvas: HTMLCanvasElement) {
   const { imageData } = await clearAndDrawImageFile(file, canvas);
@@ -15,12 +20,14 @@ async function renderImageFile(file: File, canvas: HTMLCanvasElement) {
       height: clippedHeight,
     } = clippedRect;
 
-    const ctx = canvas.getContext('2d')!;
-    ctx.strokeStyle = 'red';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(clippedX, clippedY, clippedWidth, clippedHeight);
+    drawClippedArea(canvas, {
+      x: clippedX,
+      y: clippedY,
+      width: clippedWidth,
+      height: clippedHeight,
+    });
 
-    drawBackdrops(ctx, {
+    drawBackdrops(canvas, {
       x: clippedX,
       y: clippedY,
       width: clippedWidth,
