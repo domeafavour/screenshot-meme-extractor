@@ -47,16 +47,20 @@ export function createImageElement(imageFile: File) {
   });
 }
 
-export async function clearAndDrawImage(
+export function getCanvasImageData(canvas: HTMLCanvasElement): ImageData {
+  const ctx = canvas.getContext('2d')!;
+  return ctx.getImageData(0, 0, canvas.width, canvas.height);
+}
+
+export function clearAndDrawImage(
   img: HTMLImageElement,
   canvas: HTMLCanvasElement
-): Promise<ImageData> {
+) {
   const ctx = canvas.getContext('2d')!;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   canvas.width = img.width;
   canvas.height = img.height;
   ctx.drawImage(img, 0, 0);
-  return ctx.getImageData(0, 0, img.width, img.height);
 }
 
 export function isRowColorsRoughlyEqual(

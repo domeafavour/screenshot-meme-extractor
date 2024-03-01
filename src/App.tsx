@@ -5,12 +5,13 @@ import { SelectButton } from './SelectButton';
 import { Area } from './typings';
 import {
   clearAndDrawImage,
+  createImageElement,
   downloadImage,
   drawBackdrops,
   drawClippedArea,
+  getCanvasImageData,
   getCenterImageArea,
   getClippedImage,
-  createImageElement,
 } from './utils';
 
 function App() {
@@ -24,8 +25,8 @@ function App() {
       const canvas = canvasRef.current!;
       const img = await createImageElement(file);
       imageRef.current = img;
-      const imageData = await clearAndDrawImage(img, canvas);
-      const clippedRect = getCenterImageArea(imageData);
+      clearAndDrawImage(img, canvas);
+      const clippedRect = getCenterImageArea(getCanvasImageData(canvas));
       setClippedArea(clippedRect);
 
       if (clippedRect) {
