@@ -2,6 +2,7 @@ import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
 import React, { useRef, useState } from 'react';
 import './App.css';
+import { ResetButton } from './ResetButton';
 import { SaveButton } from './SaveButton';
 import { SelectButton } from './SelectButton';
 import { Area } from './typings';
@@ -47,6 +48,11 @@ function App() {
     downloadImage(dataURL, `${fileName}.jpg`);
   }
 
+  function resetClippedArea() {
+    cropperRef.current?.reset();
+    cropperRef.current?.setData(clippedArea!);
+  }
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 max-h-full overflow-auto">
@@ -57,16 +63,7 @@ function App() {
         {!!clippedArea && (
           <div className="flex flex-row gap-2 w-full">
             <SaveButton onClick={saveClippedImage}>Save</SaveButton>
-            <button
-              type="button"
-              className="w-1/3 px-2 py-1 rounded-md bg-slate-200 hover:bg-slate-300"
-              onClick={() => {
-                cropperRef.current?.reset();
-                cropperRef.current?.setData(clippedArea);
-              }}
-            >
-              Reset
-            </button>
+            <ResetButton onClick={resetClippedArea}>Reset</ResetButton>
           </div>
         )}
       </div>
