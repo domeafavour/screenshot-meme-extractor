@@ -33,7 +33,7 @@ export function getPositionColor(
   };
 }
 
-export function loadImageFile(imageFile: File) {
+export function createImageElement(imageFile: File) {
   return new Promise<HTMLImageElement>((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {

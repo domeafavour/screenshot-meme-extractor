@@ -10,7 +10,7 @@ import {
   drawClippedArea,
   getCenterImageArea,
   getClippedImage,
-  loadImageFile,
+  createImageElement,
 } from './utils';
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
     const file = e.target.files?.[0];
     if (file) {
       const canvas = canvasRef.current!;
-      const img = await loadImageFile(file);
+      const img = await createImageElement(file);
       imageRef.current = img;
       const imageData = await clearAndDrawImage(img, canvas);
       const clippedRect = getCenterImageArea(imageData);
