@@ -1,4 +1,4 @@
-import { Area, ClippedInfo, ImageRowInfo, RGBAColor } from './typings';
+import { Area, RGBAColor } from './typings';
 
 export function areColorsEqual(a: RGBAColor, b: RGBAColor) {
   return (
@@ -59,35 +59,7 @@ export async function clearAndDrawImage(
   return ctx.getImageData(0, 0, img.width, img.height);
 }
 
-export function getImageRowInfos(imageData: ImageData) {
-  const infos: ImageRowInfo[] = [];
-
-  for (let y = 0; y < imageData.height; y++) {
-    let leftX = 0;
-    let rightX = imageData.width - 1 - leftX;
-    for (let x = leftX; x < Math.ceil(imageData.width / 2); x++) {
-      leftX = x;
-      rightX = imageData.width - 1 - x;
-      if (rightX <= leftX) {
-        rightX = leftX + 1;
-      }
-      if (
-        !areColorsEqual(
-          getPositionColor(imageData, leftX, y),
-          getPositionColor(imageData, rightX, y)
-        )
-      ) {
-        break;
-      }
-    }
-    if (rightX - leftX > 1) {
-      infos.push([y, [leftX, rightX]]);
-    }
-  }
-  return infos;
-}
-
-function isRowColorsRoughlyEqual(
+export function isRowColorsRoughlyEqual(
   imageData: ImageData,
   row: number
 ): [boolean, number, number] {
@@ -144,34 +116,10 @@ export function getCenterImageArea(imageData: ImageData): Area {
     }
   }
 
-  left = left === Infinity ? 0 : left;
-  right = right === -Infinity ? width - 1 : right;
+  left = isFinite(left) ? left : 0;
+  right = isFinite(right) ? right : width - 1;
 
   return { x: left, y: top, width: right - left, height: bottom - top };
-}
-
-export function getMinAndMax(
-  pairs: [number, number][]
-): [min: number, max: number] {
-  let min: number = Infinity;
-  let max: number = -Infinity;
-  for (let i = 0; i < pairs.length; i++) {
-    const [_min, _max] = pairs[i];
-    if (_min < min) {
-      min = _min;
-    }
-    if (_max > max) {
-      max = _max;
-    }
-  }
-  return [min, max];
-}
-
-export function getClippedInfo(infos: ImageRowInfo[]): ClippedInfo {
-  const [minX, maxX] = getMinAndMax(infos.map((info) => info[1]));
-  const minY = infos[0][0];
-  const maxY = infos[infos.length - 1][0];
-  return { minX, maxX, minY, maxY };
 }
 
 export function drawBackdrops(
@@ -201,25 +149,6 @@ export function drawBackdrops(
   ctx.fillRect(x, 0, width, y);
   // bottom center
   ctx.fillRect(x, y + height, width, canvasHeight - y - height);
-}
-
-export function getClippedRect(imageData: ImageData): {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-} | null {
-  const infos: ImageRowInfo[] = getImageRowInfos(imageData);
-  if (infos.length) {
-    const { minX, maxX, minY, maxY } = getClippedInfo(infos);
-    return {
-      x: minX,
-      y: minY,
-      width: maxX - minX,
-      height: maxY - minY,
-    };
-  }
-  return null;
 }
 
 export function drawClippedArea(
