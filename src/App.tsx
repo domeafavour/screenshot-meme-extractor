@@ -55,6 +55,12 @@ function App() {
     e.target.value = '';
   }
 
+  function saveClippedImage() {
+    const fileName = window.prompt('Your meme name', 'meme') ?? 'meme';
+    const dataURL = getClippedImage(imageRef.current!, clippedArea!);
+    downloadImage(dataURL, `${fileName}.jpg`);
+  }
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-row justify-center items-center flex-1">
@@ -63,14 +69,7 @@ function App() {
       <div className="flex flex-row gap-4 p-2 font-mono">
         <SelectButton onChange={handleChange} />
         {!!clippedArea && (
-          <SaveButton
-            onClick={() => {
-              const dataURL = getClippedImage(imageRef.current!, clippedArea!);
-              downloadImage(dataURL, 'clipped.png');
-            }}
-          >
-            Save
-          </SaveButton>
+          <SaveButton onClick={saveClippedImage}>Save</SaveButton>
         )}
       </div>
     </div>
