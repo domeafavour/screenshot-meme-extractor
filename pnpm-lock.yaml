@@ -4,6 +4,7 @@ specifiers:
   '@types/react': ^18.2.15
   '@types/react-dom': ^18.2.7
   '@vitejs/plugin-react': ^4.0.3
+  classnames: ^2.5.1
   eslint: ^8.45.0
   eslint-plugin-react: ^7.32.2
   eslint-plugin-react-hooks: ^4.6.0
@@ -14,6 +15,7 @@ specifiers:
   vite: ^4.4.5
 
 dependencies:
+  classnames: 2.5.1
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
 
@@ -904,6 +906,10 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
+
+  /classnames/2.5.1:
+    resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
+    dev: false
 
   /color-convert/1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}

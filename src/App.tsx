@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import './App.css';
+import { SaveButton } from './SaveButton';
 import { SelectButton } from './SelectButton';
 import { Area } from './typings';
 import {
@@ -60,19 +61,16 @@ function App() {
       </div>
       <div className="flex flex-row gap-4 p-2 font-mono">
         <SelectButton onChange={handleChange} />
-        <div className="w-1/2">
-          <button
-            type="button"
-            className="text-white bg-blue-600 hover:bg-blue-500 px-2 py-1 rounded-md w-full disabled:bg-gray-300 disabled:cursor-not-allowed"
-            disabled={!clippedArea}
+        {!!clippedArea && (
+          <SaveButton
             onClick={() => {
               const dataURL = getClippedImage(imageRef.current!, clippedArea!);
               downloadImage(dataURL, 'clipped.png');
             }}
           >
             Save
-          </button>
-        </div>
+          </SaveButton>
+        )}
       </div>
     </div>
   );
