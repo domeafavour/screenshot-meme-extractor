@@ -1,3 +1,5 @@
+import Cropper from 'cropperjs';
+import 'cropperjs/dist/cropper.css';
 import React, { useRef, useState } from 'react';
 import './App.css';
 import { SaveButton } from './SaveButton';
@@ -7,8 +9,6 @@ import {
   clearAndDrawImage,
   createImageElement,
   downloadImage,
-  drawBackdrops,
-  drawClippedArea,
   getCanvasImageData,
   getCenterImageArea,
   getClippedImage,
@@ -16,7 +16,9 @@ import {
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const imageRef = useRef<HTMLImageElement | null>(null);
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const cropperRef = useRef<Cropper | null>(null);
+
   const [clippedArea, setClippedArea] = useState<Area | null>(null);
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -24,52 +26,48 @@ function App() {
     if (file) {
       const canvas = canvasRef.current!;
       const img = await createImageElement(file);
-      imageRef.current = img;
       clearAndDrawImage(img, canvas);
-      const clippedRect = getCenterImageArea(getCanvasImageData(canvas));
-      setClippedArea(clippedRect);
-
-      if (clippedRect) {
-        const {
-          x: clippedX,
-          y: clippedY,
-          width: clippedWidth,
-          height: clippedHeight,
-        } = clippedRect;
-
-        drawClippedArea(canvas, {
-          x: clippedX,
-          y: clippedY,
-          width: clippedWidth,
-          height: clippedHeight,
-        });
-
-        drawBackdrops(canvas, {
-          x: clippedX,
-          y: clippedY,
-          width: clippedWidth,
-          height: clippedHeight,
-        });
+      setImage(img);
+      const clipped = getCenterImageArea(getCanvasImageData(canvas));
+      setClippedArea(clipped);
+      if (cropperRef.current) {
+        cropperRef.current.destroy();
       }
+      cropperRef.current = new Cropper(canvas, {
+        data: clipped,
+      });
     }
     e.target.value = '';
   }
 
   function saveClippedImage() {
+    const cropperData = cropperRef.current!.getData();
     const fileName = window.prompt('Your meme name', 'meme') ?? 'meme';
-    const dataURL = getClippedImage(imageRef.current!, clippedArea!);
+    const dataURL = getClippedImage(image!, cropperData!);
     downloadImage(dataURL, `${fileName}.jpg`);
   }
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex flex-row justify-center items-center flex-1">
-        <canvas ref={canvasRef} />
+      <div className="flex-1">
+        <canvas ref={canvasRef} style={{ display: 'block' }} />
       </div>
       <div className="flex flex-row gap-4 p-2 font-mono">
         <SelectButton onChange={handleChange} />
         {!!clippedArea && (
-          <SaveButton onClick={saveClippedImage}>Save</SaveButton>
+          <div className="flex flex-row gap-2 w-full">
+            <SaveButton onClick={saveClippedImage}>Save</SaveButton>
+            <button
+              type="button"
+              className="w-1/3 px-2 py-1 rounded-md bg-slate-200 hover:bg-slate-300"
+              onClick={() => {
+                cropperRef.current?.reset();
+                cropperRef.current?.setData(clippedArea);
+              }}
+            >
+              reset
+            </button>
+          </div>
         )}
       </div>
     </div>

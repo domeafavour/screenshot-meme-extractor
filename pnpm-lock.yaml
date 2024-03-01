@@ -5,6 +5,7 @@ specifiers:
   '@types/react-dom': ^18.2.7
   '@vitejs/plugin-react': ^4.0.3
   classnames: ^2.5.1
+  cropperjs: ^1.6.1
   eslint: ^8.45.0
   eslint-plugin-react: ^7.32.2
   eslint-plugin-react-hooks: ^4.6.0
@@ -16,6 +17,7 @@ specifiers:
 
 dependencies:
   classnames: 2.5.1
+  cropperjs: 1.6.1
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
 
@@ -944,6 +946,10 @@ packages:
   /convert-source-map/2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
     dev: true
+
+  /cropperjs/1.6.1:
+    resolution: {integrity: sha512-F4wsi+XkDHCOMrHMYjrTEE4QBOrsHHN5/2VsVAaRq8P7E5z7xQpT75S+f/9WikmBEailas3+yo+6zPIomW+NOA==}
+    dev: false
 
   /cross-spawn/7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
