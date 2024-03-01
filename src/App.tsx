@@ -36,6 +36,8 @@ function App() {
       }
       cropperRef.current = new Cropper(canvas, {
         data: clipped,
+        rotatable: false,
+        responsive: true,
       });
     }
     e.target.value = '';
