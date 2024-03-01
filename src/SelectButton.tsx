@@ -4,7 +4,7 @@ export type UploadButtonProps = {
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
 };
 
-export function UploadButton({ onChange }: UploadButtonProps) {
+export function SelectButton({ onChange }: UploadButtonProps) {
   const uploadRef = useRef<HTMLInputElement | null>(null);
   return (
     <div className="cursor-pointer w-1/2 overflow-hidden relative">
@@ -23,7 +23,7 @@ export function UploadButton({ onChange }: UploadButtonProps) {
             uploadRef.current?.click();
           }}
         >
-          Upload
+          Select...
         </button>
       </div>
     </div>

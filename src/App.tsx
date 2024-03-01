@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import './App.css';
-import { UploadButton } from './UploadButton';
+import { SelectButton } from './SelectButton';
 import { Area } from './typings';
 import {
   clearAndDrawImage,
@@ -59,7 +59,7 @@ function App() {
         <canvas ref={canvasRef} />
       </div>
       <div className="flex flex-row gap-4 p-2 font-mono">
-        <UploadButton onChange={handleChange} />
+        <SelectButton onChange={handleChange} />
         <div className="w-1/2">
           <button
             type="button"
