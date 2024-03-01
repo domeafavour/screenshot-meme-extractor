@@ -49,7 +49,7 @@ function App() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1">
+      <div className="flex-1 max-h-full overflow-auto">
         <canvas ref={canvasRef} style={{ display: 'block' }} />
       </div>
       <div className="flex flex-row gap-4 p-2 font-mono">
@@ -65,7 +65,7 @@ function App() {
                 cropperRef.current?.setData(clippedArea);
               }}
             >
-              reset
+              Reset
             </button>
           </div>
         )}
