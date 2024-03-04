@@ -15,9 +15,14 @@ import {
   getClippedImage,
 } from './utils';
 
+function getExtensionName(fileName: string) {
+  return fileName.match(/\.(?<ext>\w+)$/)!.groups!.ext;
+}
+
 function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const fileRef = useRef<File | null>(null);
   const cropperRef = useRef<Cropper | null>(null);
 
   const [clippedArea, setClippedArea] = useState<Area | null>(null);
@@ -25,6 +30,7 @@ function App() {
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
+      fileRef.current = file;
       const canvas = canvasRef.current!;
       const img = await createImageElement(file);
       clearAndDrawImage(img, canvas);
@@ -45,9 +51,14 @@ function App() {
 
   function saveClippedImage() {
     const cropperData = cropperRef.current!.getData();
-    const fileName = window.prompt('Your meme name', 'meme') ?? 'meme';
-    const dataURL = getClippedImage(image!, cropperData!);
-    downloadImage(dataURL, `${fileName}.jpg`);
+    const fileName = window.prompt('Your meme name', `meme-${Date.now()}`);
+    if (fileName) {
+      const dataURL = getClippedImage(image!, cropperData!);
+      downloadImage(
+        dataURL,
+        `${fileName}.${getExtensionName(fileRef.current!.name)}`
+      );
+    }
   }
 
   function resetClippedArea() {
